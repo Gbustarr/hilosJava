@@ -22,8 +22,25 @@ class puntoEventos {
 
         //Hilos caja presencial
         caja caja1 = new caja(1, 0);
-        caja1.setEvento(controladorEventos.get(0));
+        caja caja2 = new caja(2, 0);
+
+        //Hilos web
+        caja web1 = new caja(1, 1);
+        caja web2 = new caja(2, 1);
+        caja web3 = new caja(3, 1);
+        caja web4 = new caja(4, 1);
+
+        int idEvento;
+        
         caja1.start();
+        idEvento = (int)(Math.random()*(controladorEventos.size()-1));
+        caja1.setEvento(controladorEventos.get(idEvento));
+        //idEvento = (int)(Math.random()*(controladorEventos.size()-1));
+        caja2.setEvento(controladorEventos.get(idEvento));
+        caja2.start();
+
+        
+        
 
         
 

@@ -22,7 +22,16 @@ public class caja extends Thread{
 
     @Override
     public void run() {
-
-        evento.comprar(tipo,nombreHilo);
+        while (true) {
+            evento.comprar(tipo,nombreHilo);
+            System.out.println(nombreHilo+" "+evento.eventoControlado.nombre+": "+evento.eventoControlado.cantidadTickets);
+            try {
+                // Pausa el hilo durante 1 segundo (1000 milisegundos)
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        
     }
 }
