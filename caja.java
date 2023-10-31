@@ -32,14 +32,23 @@ public class caja extends Thread{
         int aux=0;
         int aux2=0;
         while (true) {
-            if(aux2<10) {
-                idEvento = (int) (Math.random() * (controladorEventos.size() - 1));
-                setEvento(controladorEventos.get(idEvento));
-                evento.comprar(tipo, nombreHilo, new File(fechaActual.plusDays(aux).toString() + ".txt"));
-                System.out.println(nombreHilo + " " + evento.eventoControlado.nombre + ": " + evento.eventoControlado.cantidadTickets);
-                aux++;
-                idEvento = (int) (Math.random() * (controladorEventos.size() - 1));
-
+            if(aux2<30) {//30 interacciones diarias
+                int sum=0;
+                for(int i =0;i<controladorEventos.size();i++){
+                    sum=sum+controladorEventos.get(i).eventoControlado.cantidadTickets;
+                    if(sum!=0){
+                        //break;
+                    }
+                }
+                if(sum>0){
+                   idEvento = (int) (Math.random() * (controladorEventos.size()));
+                   setEvento(controladorEventos.get(idEvento));
+                   evento.comprar(tipo, nombreHilo, new File(fechaActual.plusDays(aux).toString() + ".txt"));
+                   System.out.println(nombreHilo + " " + evento.eventoControlado.nombre + ": " + evento.eventoControlado.cantidadTickets);
+                   aux++;
+                }else{
+                    break;
+                }
             }else{
                 aux2=0;
                 aux++;

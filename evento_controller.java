@@ -21,7 +21,7 @@ class evento_controller {
     }
 
     // Comprar tickets
-    public boolean comprar(int tipo, String infoHilo, File dia) { // 0 : Presencial, 1 : Web
+    public int comprar(int tipo, String infoHilo, File dia) { // 0 : Presencial, 1 : Web
 
         try {
             semaforo.acquire();
@@ -31,70 +31,52 @@ class evento_controller {
 
                     if (eventoControlado.esComprableWeb(asientos)) { // Check para poder comprar
                         eventoControlado.comprar(asientos);
-                        log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre(),dia);
+                        log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre()+"-ticket disponibles:"+eventoControlado.cantidadTickets,dia);
                         semaforo.release();
                         // resultado(infoHilo,asientos,eventoControlado,1); // Venta online satisfactoria
-                        return true;
+                        return eventoControlado.cantidadTickets;
                     } else {
                         log(infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre()
-                                + " - No quedan disponibles (>80%)", dia);
+                                + " - No quedan disponibles (>80%)"+"-ticket disponibles:"+eventoControlado.cantidadTickets, dia);
                         semaforo.release();
                         
                         //resultado(infoHilo,asientos,eventoControlado,2);  // Venta online fallida, tickets a comprar sobrepasa al 80% vendido
-                        return true;
+                        return eventoControlado.cantidadTickets;
                     }
 
                 } else { // Presencial
                     int asientos = getRandomNumberSeats();
 
                     if (eventoControlado.comprar(asientos)) {
-                        log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre(), dia);
+                        log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre()+"-ticket disponibles:"+eventoControlado.cantidadTickets, dia);
                         semaforo.release();
                         //resultado(infoHilo,asientos,eventoControlado,3);  // Venta Presencial exitosa
-                        return true; 
+                        return eventoControlado.cantidadTickets; 
                     } else {
                         log(infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre()
-                                + " - Compra mayor al disponible ", dia);
+                                + " - Compra mayor al disponible "+"-ticket disponibles:"+eventoControlado.cantidadTickets, dia);
                         semaforo.release();
                         //resultado(infoHilo,asientos,eventoControlado,4);  // Venta Presencial fallida
-                        return true;
+                        return eventoControlado.cantidadTickets;
                     }
 
                 }
 
             } else {
                 log(infoHilo + " intenta comprar tickets de " + eventoControlado.getNombre()
-                        + " - No hay tickets disponibles ", dia);
+                        + " - No hay tickets disponibles "+"-ticket disponibles:"+eventoControlado.cantidadTickets, dia);
                 semaforo.release();
                 //resultado(infoHilo,0,eventoControlado,5);  // No hay tickets disponibles para vender
-                return false;
+                return eventoControlado.cantidadTickets;
             }
         } catch (Exception e) {
             // Error mi king
             e.printStackTrace();
-            return false; // Error
+            return -1; // Error
         }
 
     }
-    public String resultado(String infoHilo, int asientos, info_evento eventoControlado, int retorno) {
-        if (retorno==1){
-           return infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre();
-        }
-        if (retorno==2){
-            return infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre() + " - No quedan disponibles (>80%)";
-        }
-        if (retorno==3){
-            return infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre();
-        }
-        if (retorno==4){
-            return infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre() + " - Compra mayor al disponible ";
-        }
-        if (retorno==5){
-            return infoHilo + " intenta comprar tickets de " + eventoControlado.getNombre() + " - No hay tickets disponibles ";
-        }
-        return " ";
-    }
-
+    
     public int getRandomNumberSeats() {
         int numeroAleatorio = random.nextInt(3);
         numeroAleatorio = +1; // Para evitar que genere 0
