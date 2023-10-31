@@ -21,7 +21,7 @@ class evento_controller {
     }
 
     // Comprar tickets
-    public String comprar(int tipo, String infoHilo, File dia) { // 0 : Presencial, 1 : Web
+    public boolean comprar(int tipo, String infoHilo, File dia) { // 0 : Presencial, 1 : Web
 
         try {
             semaforo.acquire();
@@ -33,12 +33,15 @@ class evento_controller {
                         eventoControlado.comprar(asientos);
                         log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre(),dia);
                         semaforo.release();
-                        return resultado(infoHilo,asientos,eventoControlado,1); // Venta online satisfactoria
+                        // resultado(infoHilo,asientos,eventoControlado,1); // Venta online satisfactoria
+                        return true;
                     } else {
                         log(infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre()
                                 + " - No quedan disponibles (>80%)", dia);
                         semaforo.release();
-                        return resultado(infoHilo,asientos,eventoControlado,2);  // Venta online fallida, tickets a comprar sobrepasa al 80% vendido
+                        
+                        //resultado(infoHilo,asientos,eventoControlado,2);  // Venta online fallida, tickets a comprar sobrepasa al 80% vendido
+                        return true;
                     }
 
                 } else { // Presencial
@@ -47,12 +50,14 @@ class evento_controller {
                     if (eventoControlado.comprar(asientos)) {
                         log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre(), dia);
                         semaforo.release();
-                        return resultado(infoHilo,asientos,eventoControlado,3);  // Venta Presencial exitosa
+                        //resultado(infoHilo,asientos,eventoControlado,3);  // Venta Presencial exitosa
+                        return true; 
                     } else {
                         log(infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre()
                                 + " - Compra mayor al disponible ", dia);
                         semaforo.release();
-                        return resultado(infoHilo,asientos,eventoControlado,4);  // Venta Presencial fallida
+                        //resultado(infoHilo,asientos,eventoControlado,4);  // Venta Presencial fallida
+                        return true;
                     }
 
                 }
@@ -61,12 +66,13 @@ class evento_controller {
                 log(infoHilo + " intenta comprar tickets de " + eventoControlado.getNombre()
                         + " - No hay tickets disponibles ", dia);
                 semaforo.release();
-                return resultado(infoHilo,0,eventoControlado,5);  // No hay tickets disponibles para vender
+                //resultado(infoHilo,0,eventoControlado,5);  // No hay tickets disponibles para vender
+                return false;
             }
         } catch (Exception e) {
             // Error mi king
             e.printStackTrace();
-            return -1+""; // Error
+            return false; // Error
         }
 
     }

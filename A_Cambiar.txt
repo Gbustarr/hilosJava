@@ -1,0 +1,5 @@
+1. Al momento de crear los info_eventos, verificar que la fecha de los eventos sea igual o mayor a la fecha actual del pc 
+2. Cambiar el retorno de evento_controller nuevamente a integer para que los hilos sean capaces de identificar los eventos que ya no tienen tickets por vender.(Como está el codigo actualmente no se puede identificar ya que se deberia de parsear el string que devuelve evento_controller)
+3. Implementado el punto 2, se puede conseguir que los hilos no busquen los eventos que ya no se pueden conseguir tickets.
+4. Implementar que luego de que la fecha del evento pase, eliminarlo del arraylist de evento_controller.
+5. Si no quedan elementos en evento_controller, que el hilo se cierre. (Verificar si cumple con lo que especifica los requisitos del proyecto)
