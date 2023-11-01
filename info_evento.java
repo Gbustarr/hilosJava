@@ -1,11 +1,16 @@
 public class info_evento {
-    public String fecha;
+    //public String fecha;
+    public int dia;
+    public int mes;
+    public int anho;
     public String nombre;
     public int cantidadTickets;
     public int veintePorciento = 0; // Para web
 
-    public info_evento(String fecha, String nombre, int cantidadTickets) {
-        this.fecha = fecha;
+    public info_evento(int dia, int mes, int anho, String nombre, int cantidadTickets) {
+        this.dia = dia;
+        this.mes = mes;
+        this.anho = anho;
         this.nombre = nombre;
         this.cantidadTickets = cantidadTickets;
 
@@ -15,10 +20,6 @@ public class info_evento {
 
     public int getCantidadTickets() {
         return cantidadTickets;
-    }
-
-    public String getFecha() {
-        return fecha;
     }
 
     public String getNombre() {
@@ -53,6 +54,6 @@ public class info_evento {
 
     @Override
     public String toString() {
-        return "Fecha: " + fecha + " Nombre: " + nombre + " Cantidad de tickets: " + cantidadTickets;
+        return "Fecha: " + anho+"-"+ mes+"-"+dia+ " Nombre: " + nombre + " Cantidad de tickets: " + cantidadTickets;
     }
 }

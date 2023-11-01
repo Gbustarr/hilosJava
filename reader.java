@@ -28,14 +28,16 @@ public class reader {
             // Lectura del fichero
             String linea;
 
-            Pattern patron = Pattern.compile("(\\d+-\\d+-\\d+) - (\\S+) - (\\d+)");
+            Pattern patron = Pattern.compile("(\\d+)-(\\d+)-(\\d+) - (\\S+) - (\\d+)");
             while ((linea = br.readLine()) != null) {
                 Matcher matcher = patron.matcher(linea);
                 if (matcher.find()) {
-                    String fecha = matcher.group(1);
-                    String nombre = matcher.group(2);
-                    int cantidad = Integer.parseInt(matcher.group(3));
-                    info_evento evento = new info_evento(fecha, nombre, cantidad);
+                    int dia = Integer.parseInt(matcher.group(1));
+                    int mes = Integer.parseInt(matcher.group(2));
+                    int anho = Integer.parseInt(matcher.group(3));
+                    String nombre = matcher.group(4);
+                    int cantidad = Integer.parseInt(matcher.group(5));
+                    info_evento evento = new info_evento(anho,mes,dia, nombre, cantidad);
                     eventos.add(evento);
                 }
             }

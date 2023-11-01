@@ -10,17 +10,31 @@ public class caja extends Thread{
     ArrayList<evento_controller> controladorEventos = new ArrayList<>();
     String nombreHilo;
     File f=null;
+    int aux2[];
+    LocalDate fechaActual[];
 
-    public caja(int idHilo, int tipo, ArrayList<evento_controller>controladorEventos){
+    public caja(int idHilo, int tipo, ArrayList<evento_controller>controladorEventos, int aux2[], LocalDate fechaActual[]){
         this.idHilo = idHilo;
         this.tipo = tipo;
         this.controladorEventos=controladorEventos;
+        this.aux2 = aux2;
+        this.fechaActual = fechaActual;
         if(tipo == 0){
             nombreHilo = "Caja " + idHilo;
         }
         else{
             nombreHilo = "Hilo Web " + idHilo;
         }
+
+    }
+
+    public boolean comprobarFechaAnterior(evento_controller evento, LocalDate fechaActual) {
+        LocalDate fechaEvento = LocalDate.of(evento.eventoControlado.anho, evento.eventoControlado.mes, evento.eventoControlado.dia);
+        return fechaActual.isBefore(fechaEvento);
+    }
+    public boolean comprobarDiaEvento(evento_controller evento, LocalDate fechaActual) {
+        LocalDate fechaEvento = LocalDate.of(evento.eventoControlado.anho, evento.eventoControlado.mes, evento.eventoControlado.dia);
+        return fechaActual.isEqual(fechaEvento);
     }
 
     public void setEvento(evento_controller evento){
@@ -28,11 +42,10 @@ public class caja extends Thread{
     }
     @Override
     public void run() {
-        LocalDate fechaActual = LocalDate.now();
         int aux=0;
-        int aux2=0;
+        
         while (true) {
-            if(aux2<30) {//30 interacciones diarias
+            if(aux2[0]<5) {//30 interacciones diarias
                 int sum=0;
                 for(int i =0;i<controladorEventos.size();i++){
                     sum=sum+controladorEventos.get(i).eventoControlado.cantidadTickets;
@@ -41,16 +54,32 @@ public class caja extends Thread{
                     }
                 }
                 if(sum>0){
-                   idEvento = (int) (Math.random() * (controladorEventos.size()));
-                   setEvento(controladorEventos.get(idEvento));
-                   evento.comprar(tipo, nombreHilo, new File(fechaActual.plusDays(aux).toString() + ".txt"));
-                   System.out.println(nombreHilo + " " + evento.eventoControlado.nombre + ": " + evento.eventoControlado.cantidadTickets);
-                   aux++;
+                    idEvento = (int) (Math.random() * (controladorEventos.size()));
+                    if(comprobarFechaAnterior(controladorEventos.get(idEvento), fechaActual[0])){
+                        if( (tipo == 0 && idHilo==1) || tipo==1){
+                            setEvento(controladorEventos.get(idEvento));
+                            evento.comprar(tipo, nombreHilo, new File(fechaActual[0].toString() + ".txt"));
+                            System.out.println(nombreHilo + " " + evento.eventoControlado.nombre + ": " + evento.eventoControlado.cantidadTickets);
+                            //aux++;
+                        }
+                    }
+                    else if (comprobarDiaEvento(controladorEventos.get(idEvento), fechaActual[0])) {
+                        setEvento(controladorEventos.get(idEvento));
+                        evento.comprar(tipo, nombreHilo, new File(fechaActual[0].toString() + ".txt"));
+                        System.out.println(nombreHilo + " " + evento.eventoControlado.nombre + ": " + evento.eventoControlado.cantidadTickets);
+                        //aux++;
+                    }
+                    else{
+                        controladorEventos.remove(idEvento);
+                    }
+                    aux2[0]++;
                 }else{
                     break;
                 }
             }else{
-                aux2=0;
+                aux2[0]=0;
+                fechaActual[0] = fechaActual[0].plusDays(1);
+                System.out.println(fechaActual[0]);
                 aux++;
             }
 
