@@ -42,10 +42,8 @@ public class caja extends Thread{
     }
     @Override
     public void run() {
-        int aux=0;
-        
         while (true) {
-            if(aux2[0]<5) {//30 interacciones diarias
+            if(aux2[0]<20) {//30 interacciones diarias
                 int sum=0;
                 for(int i =0;i<controladorEventos.size();i++){
                     sum=sum+controladorEventos.get(i).eventoControlado.cantidadTickets;
@@ -80,7 +78,6 @@ public class caja extends Thread{
                 aux2[0]=0;
                 fechaActual[0] = fechaActual[0].plusDays(1);
                 System.out.println(fechaActual[0]);
-                aux++;
             }
 
             try {
