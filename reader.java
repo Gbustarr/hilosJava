@@ -28,7 +28,7 @@ public class reader {
             // Lectura del fichero
             String linea;
 
-            Pattern patron = Pattern.compile("(\\d+)-(\\d+)-(\\d+) - (\\S+) - (\\d+)");
+            Pattern patron = Pattern.compile("(\\d+)-(\\d+)-(\\d+) - ([^-]+) - (\\d+)");
             while ((linea = br.readLine()) != null) {
                 Matcher matcher = patron.matcher(linea);
                 if (matcher.find()) {
