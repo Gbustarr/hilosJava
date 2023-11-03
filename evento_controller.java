@@ -7,10 +7,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 class evento_controller {
     String nombre_evento = "";
     Semaphore semaforo = new Semaphore(5);
+    private static Lock lock = new ReentrantLock();
     info_evento eventoControlado = null;
     Random random = new Random();
     
@@ -25,6 +28,7 @@ class evento_controller {
 
         try {
             semaforo.acquire();
+            lock.lock();
             if (eventoControlado.hayTickets()) { // Verificando si el evento tiene tickets disponibles
                 if (tipo == 1) { // Web
                     int asientos = getRandomNumberSeats();
@@ -33,12 +37,14 @@ class evento_controller {
                         eventoControlado.comprar(asientos);
                         log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre()+" tickets restantes:"+eventoControlado.cantidadTickets,dia  );
                         semaforo.release();
+                        lock.unlock();
                         // resultado(infoHilo,asientos,eventoControlado,1); // Venta online satisfactoria
                         return eventoControlado.cantidadTickets;
                     } else {
                         log(infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre()
                                 + " - No quedan disponibles (>80%)"+" tickets restantes:"+eventoControlado.cantidadTickets, dia);
                         semaforo.release();
+                        lock.unlock();
                         
                         //resultado(infoHilo,asientos,eventoControlado,2);  // Venta online fallida, tickets a comprar sobrepasa al 80% vendido
                         return eventoControlado.cantidadTickets;
@@ -50,12 +56,14 @@ class evento_controller {
                     if (eventoControlado.comprar(asientos)) {
                         log(infoHilo + " compra " + asientos + " ticket de " + eventoControlado.getNombre()+" tickets restantes:"+eventoControlado.cantidadTickets, dia);
                         semaforo.release();
+                        lock.unlock();
                         //resultado(infoHilo,asientos,eventoControlado,3);  // Venta Presencial exitosa
                         return eventoControlado.cantidadTickets; 
                     } else {
                         log(infoHilo + " intenta comprar " + asientos + " ticket de " + eventoControlado.getNombre()
                                 + " - Compra mayor al disponible "+" tickets restantes:"+eventoControlado.cantidadTickets, dia);
                         semaforo.release();
+                        lock.unlock();
                         //resultado(infoHilo,asientos,eventoControlado,4);  // Venta Presencial fallida
                         return eventoControlado.cantidadTickets;
                     }
@@ -66,6 +74,7 @@ class evento_controller {
                 log(infoHilo + " intenta comprar tickets de " + eventoControlado.getNombre()
                         + " - No hay tickets disponibles "+" tickets restantes:"+eventoControlado.cantidadTickets, dia);
                 semaforo.release();
+                lock.unlock();
                 //resultado(infoHilo,0,eventoControlado,5);  // No hay tickets disponibles para vender
                 return eventoControlado.cantidadTickets;
             }
